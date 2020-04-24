@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:order_app_362/database.dart';
 import 'logins.dart';
 
 
@@ -14,7 +14,7 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _email, _password, _role;
+  String _email, _password, _role = 'customer';
   @override
 
   Widget build(BuildContext context) {
@@ -55,6 +55,24 @@ class _SignUpState extends State<SignUp> {
                 _password = value;
               },
             ),
+           
+           new DropdownButton<String>(
+             value: _role,
+             items: <String>['customer', 'business'].map((String role) {
+                  return new DropdownMenuItem<String>(
+                    value: role,
+                    child: new Text(role),
+                  );
+                }).toList(),
+              onChanged: (String changedValue) {
+                setState(() {
+                   _role = changedValue;
+                }
+                );
+              },
+            ),
+            
+
             RaisedButton(
               onPressed: signUp,
               child: Text('Sign up'),
@@ -70,9 +88,8 @@ class _SignUpState extends State<SignUp> {
       _formKey.currentState.save();
       try{
         FirebaseUser user = (await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password)).user;
-
-        //create a new doc for the user with the uid
-        // await DatabaseService(uid: user.uid).updateUserData('x', 'y', 'z');
+        
+        await DatabaseService(uid: user.uid).updateUserData(_email, _role);
         user.sendEmailVerification(); //Display for user that we sent email - to be done
         Navigator.of(context).pop();
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CustomerHome(user: user)));

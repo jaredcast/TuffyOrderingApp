@@ -1,5 +1,4 @@
 import 'package:order_app_362/form_screen.dart';
-import 'package:order_app_362/logins.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
