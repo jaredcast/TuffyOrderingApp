@@ -1,6 +1,6 @@
 # orderapp362
 
-A new Flutter application.
+A new Flutter application. Run using main2.dart. The rest of the code is included in lib/form_screen.dart
 
 ## Getting Started
 
