@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "164885355090",
+    "firebase_url": "https://tuffyordering.firebaseio.com",
+    "project_id": "tuffyordering",
+    "storage_bucket": "tuffyordering.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164885355090:android:446a1c70eb5383be37dd8b",
+        "android_client_info": {
+          "package_name": "com.example.orderapp362"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "164885355090-pevcrithcf7ib6d7150qet41ihm89a6b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8RAL4bHZlKszI2_0cR9C3zw7YCxt-nqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "164885355090-pevcrithcf7ib6d7150qet41ihm89a6b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
