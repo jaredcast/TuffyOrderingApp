@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:order_app_362/database.dart';
 import 'package:order_app_362/logins.dart';
 import 'package:order_app_362/sign_up.dart';
+import 'package:order_app_362/home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FormScreen extends StatefulWidget {
   @override
@@ -12,7 +15,12 @@ class FormScreenState extends State<FormScreen> {
 
   String _email;
   String _password;
+  String _role = "customer";
+  String _uid;
 
+  DatabaseService myDatabase = new DatabaseService();
+  QuerySnapshot userInfo;
+  final firestoreInstance = Firestore.instance;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -35,7 +43,8 @@ class FormScreenState extends State<FormScreen> {
   Widget customerButton() {
     return RaisedButton(child: Text("Login as Customer"),
     color: Colors.blue,
-    onPressed: signInCustomer,
+    //onPressed: signInCustomer,
+    onPressed: signIn,
     );
   }
   Widget businessButton() {
@@ -71,26 +80,99 @@ class FormScreenState extends State<FormScreen> {
     );
   }
 
-  Future<void> signInCustomer() async{
-    final formState = formKey.currentState;
-    if (formState.validate()) {
-      formState.save();
-      try {
+  // Widget buildRole() {
+  //   return DropdownButton<String>(
+  //            value: _role,
+  //            items: <String>['customer', 'business'].map((String role) {
+  //                 return new DropdownMenuItem<String>(
+  //                   value: role,
+  //                   child: new Text(role),
+  //                 );
+  //               }).toList(),
+  //             onChanged: (String changedValue) {
+  //               setState(() {
+  //                  _role = changedValue;
+  //               }
+  //               );
+  //             },
+  //           );
+  // }
+
+  // Stream<QuerySnapshot> getUserSnapshots(BuildContext context) async* {
+  //   final uid = await Provider.of(context),a
+  // }
+
+  // Future<String> getUserRole(String uid) async {
+  //   DocumentSnapshot ds = await Firestore.instance.collection('users').document(uid).get();
+  //   return ds.data['role'];
+  // }
+
+  // Future<void> signInCustomer() async{
+    
+  //   final formState = formKey.currentState;
+  //   if (formState.validate()) {
+  //     formState.save();
+  //     try {
+  //       FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password)).user;
+  //       Navigator.push(context, MaterialPageRoute(builder: (context) => Home(user: user)));
+
+  //       //Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerHome(user: user))); //go to customer homepage
+  //     }
+  //     catch(e) {
+  //       print(e.message);
+  //     }
+  //   }
+  // }
+
+  void signIn() async {
+    if(formKey.currentState.validate()){
+      formKey.currentState.save();
+      try{
         FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password)).user;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerHome(user: user))); //go to customer homepage
-      }
-      catch(e) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Home(user: user)));
+      }catch(e){
         print(e.message);
       }
     }
   }
 
+
+
+
+  // Future getPosts() async {
+  //   var firestore = Firestore.instance;
+  //   QuerySnapshot qn = await firestore.collection("users").getDocuments();
+  //   return qn.documents;
+  // }
+
+  // getLatest(String email) {
+  //   return Firestore.instance.collection('users')
+  //   .where('email', isEqualTo: email).snapshots();
+  // }
+ 
+
+
+
+  // @override
+  // void initState() {
+  //   myDatabase.getData().then((results)
+  //   {
+  //     setState((){
+  //       userInfo = results;
+  //     });
+  //   });
+  // }
+
    Future<void> signInBusiness() async{
     final formState = formKey.currentState;
-    if (formState.validate()) {
+    if (formState.validate() &&_role == "business") {
       formState.save();
       try {
         FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password)).user;
+       //from here
+        // _uid = user.uid;
+        // Firestore.instance.collection('users').document(currentUid).collection('usersPosts');
+
         Navigator.push(context, MaterialPageRoute(builder: (context) => BusinessHome(user: user))); //go to business homepage
       }
       catch(e) {
@@ -111,37 +193,13 @@ class FormScreenState extends State<FormScreen> {
         fit: BoxFit.fitWidth);
   }
 
-  //builds dropdown bar
-  // String dropdownValue = 'Customer';
-  // Widget buildDropdown(BuildContext context) {
-  //   return DropdownButton<String>(
-  //       value: dropdownValue,
-  //       icon: Icon(Icons.arrow_downward),
-  //       iconSize: 24,
-  //       elevation: 16,
-  //       style: TextStyle(
-  //         color: Colors.black,
-  //       ),
-  //       underline: Container(
-  //         height: 2,
-  //         color: Colors.green,
-  //       ),
-      
-  //       onChanged: (String newValue) {
-  //         setState(() {
-  //           dropdownValue = newValue;
-  //         });
-  //       },
-  //       items: <String>['Customer', 'Business']
-  //         .map<DropdownMenuItem<String>>((String value) {
-  //           return DropdownMenuItem<String>(
-  //             value: value,
-  //             child: Text(value),
-  //           );
-  //       })
-  //       .toList()
-  //   );
-  // }
+    void getStuff(x) async{
+    FirebaseUser firebaseUser = x;
+    firestoreInstance.collection("users").document(firebaseUser.uid).get().then((value){
+      print(value.data);
+    });
+  }
+
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,10 +217,10 @@ class FormScreenState extends State<FormScreen> {
                     children: <Widget>[
                       buildImage(),
                       buildEmail(),
-                      buildPassword(),
+                      buildPassword(),  
                       SizedBox(height: 20),
                       customerButton(),
-                      businessButton(),
+                      //businessButton(),
                       // buildDropdown(context),
                       SizedBox(height: 10),
                       signUpButton(),
