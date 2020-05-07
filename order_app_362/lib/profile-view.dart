@@ -12,29 +12,3 @@ class Profile{
     role = data['role'];  
   }
 }
-
-// class ProfileView extends StatefulWidget {
-
-//   @override
-//   _ProfileViewState createState() => _ProfileViewState();
-// }
-
-// class _ProfileViewState extends State<ProfileView> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(appBar: AppBar(title: Text("testing")),
-//     body: StreamBuilder(
-//       stream: Firestore.instance.collection('users').snapshots(),
-//       builder: (context, snapshot) {
-//         if (!snapshot.hasData) return const Text('loading.....');
-//         return ListView.builder(
-//           itemBuilder: (context, index) =>
-//           _buildListItem(context, _list[index])),
-//       },
-
-//     )
-    
-    
-//     );
-//   }
-// }

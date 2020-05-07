@@ -7,7 +7,10 @@ class DatabaseService {
 
   // collection reference
   final CollectionReference userCollection = Firestore.instance.collection('users');
+  final CollectionReference orderCollection = Firestore.instance.collection('orders');
 
+
+  //Updates customer data
   Future updateUserData(String email, String role, String uid) async {
     return await userCollection.document(uid).setData({
       'email': email,
@@ -18,6 +21,16 @@ class DatabaseService {
 
     getData() async{
     return await Firestore.instance.collection('users').getDocuments();
+  }
+
+  Future createOrder(String entree, String drink, String side, String notes, String uid) async {
+    return await orderCollection.document(uid).setData({
+      'entree': entree,
+      'drink': drink,
+      'side': side,
+      'notes': notes,
+      'uid': uid
+    });
   }
 
 }

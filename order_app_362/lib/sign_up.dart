@@ -23,63 +23,64 @@ class _SignUpState extends State<SignUp> {
       appBar: new AppBar(),
       body: Form(
         key: _formKey,
-        child: Column(children: <Widget>[
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: Column(children: <Widget>[
 
-          TextFormField( //Email
-            decoration: InputDecoration(labelText: 'Email'),
-            validator: (String value) {
-              if (value.isEmpty) {
-                return 'Email is Required';
-              }
-              return null;
-             },
-              onSaved: (String value) //takes in a value
-              {
-                _email = value;
-              },
-            ),
-
-            TextFormField(
-              obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
-              keyboardType: TextInputType.visiblePassword, //gets you different keyboard types to use
+            TextFormField( //Email
+              decoration: InputDecoration(labelText: 'Email'),
               validator: (String value) {
                 if (value.isEmpty) {
-                  return 'Password is Required';
-                }
-                else if (value.length < 4) {
-                  return 'Password is too short';
+                  return 'Email is Required';
                 }
                 return null;
-              },
-              onSaved: (String value) {
-                _password = value;
-              },
-            ),
-           
-           new DropdownButton<String>(
-             value: _role,
-             items: <String>['customer', 'business'].map((String role) {
-                  return new DropdownMenuItem<String>(
-                    value: role,
-                    child: new Text(role),
-                  );
-                }).toList(),
-              onChanged: (String changedValue) {
-                setState(() {
-                   _role = changedValue;
-                }
-                );
-              },
-            ),
-            
-
-            RaisedButton(
-              onPressed: signUp,
-              child: Text('Sign up'),
+               },
+                onSaved: (String value) //takes in a value
+                {
+                  _email = value;
+                },
               ),
-            ],
-          )
+
+              TextFormField(
+                obscureText: true,
+                decoration: InputDecoration(labelText: 'Password'),
+                keyboardType: TextInputType.visiblePassword, //gets you different keyboard types to use
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return 'Password is Required';
+                  }
+                  else if (value.length < 4) {
+                    return 'Password is too short';
+                  }
+                  return null;
+                },
+                onSaved: (String value) {
+                  _password = value;
+                },
+              ),
+             
+             new DropdownButton<String>(
+               value: _role,
+               items: <String>['customer', 'business'].map((String role) {
+                    return new DropdownMenuItem<String>(
+                      value: role,
+                      child: new Text(role),
+                    );
+                  }).toList(),
+                onChanged: (String changedValue) {
+                  setState(() {
+                     _role = changedValue;
+                  }
+                  );
+                },
+              ),
+              RaisedButton(
+                onPressed: signUp,
+                child: Text('Sign up'),
+                ),
+              ],
+            ),
+        )
         ,)
     );
   }
