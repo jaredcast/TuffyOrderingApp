@@ -108,19 +108,3 @@ class _SignUpState extends State<SignUp> {
   }
 }
 
-// class DatabaseService {
-//   final String uid;
-//   DatabaseService({this.uid});
-
-//   final CollectionReference userCollection = Firestore.instance.collection('users');
-
-//   Future<void> updateUserData(String email, String password, String role) async {
-//     return await userCollection.document(uid).setData({
-//       'email': email,
-//       'password': password,
-//       'role': role,
-//     });
-// }
-
-
-

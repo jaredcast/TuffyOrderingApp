@@ -71,24 +71,3 @@ class _BusinessHomeState extends State<BusinessHome> {
   }
 
 }
-
-//class _CustomerHomeState extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("Welcome Customer"),
-//       centerTitle: true),
-//     );
-//   }
-// }
-
-// class LoginAsBusiness extends StatelessWidget {
-//  @override
-//   Widget build(BuildContext context) {
-//      return Scaffold(appBar:
-//      AppBar(title: Text("Welcome Business Owner"),
-//      centerTitle: true),
-//      );
-//    }
-//  }
-

@@ -23,10 +23,6 @@ class Home extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(builder: (context) => ViewOrder()));
   }
 
-  //  void navToViewOrder() {
-  //   Navigator.push(context, MaterialPageRoute(builder: (context) => ViewOrder()));
-  // }
-
   Widget orderButton() {
     return RaisedButton(child: Text("Place an order"),
     color: Colors.blue,
@@ -40,13 +36,6 @@ class Home extends StatelessWidget {
     onPressed: navToViewOrder,
     );
   }
-
-  // Widget getOrderButton() {
-  //   return RaisedButton(child: Text("View orders"),
-  //   color: Colors.blue,
-  //   onPressed: navToViewOrder,
-  //   );
-  // }
   
     return StreamBuilder(
       stream: Firestore.instance.collection('users').document(uID).snapshots(),
