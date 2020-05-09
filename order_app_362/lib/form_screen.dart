@@ -14,8 +14,6 @@ class FormScreenState extends State<FormScreen> {
 
   String _email;
   String _password;
-  String _role = "customer";
-  String _uid;
 
   DatabaseService myDatabase = new DatabaseService();
   QuerySnapshot userInfo;

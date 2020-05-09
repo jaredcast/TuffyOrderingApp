@@ -4,7 +4,6 @@ import 'dart:collection';
 
 class ProfileNotifier with ChangeNotifier{
   List<Profile> _profileList = [];
-  Profile _currentProfile;
 
   UnmodifiableListView<Profile> get profileList => UnmodifiableListView(_profileList);
 

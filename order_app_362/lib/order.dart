@@ -13,13 +13,12 @@ class Order extends StatefulWidget {
   @override
   _OrderState createState() => _OrderState();
 }
-
+//Testing before push
 class _OrderState extends State<Order> {
   String _entree = 'N/A';
   String _drink = 'N/A';
   String _side = 'N/A';
   String _notes;
-  String _uid;
   
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class _OrderState extends State<Order> {
         alignment: Alignment.topLeft,
         margin: EdgeInsets.all(24),
         child: 
-          Column( 
+          Column( //Many widgets go in column.
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
             Text("Entree:", style: TextStyle(fontSize: 30, decoration: TextDecoration.underline,)),
@@ -42,7 +41,7 @@ class _OrderState extends State<Order> {
             buildSide(),
             Text("Notes:", style: TextStyle(fontSize: 30, decoration: TextDecoration.underline,)),
             buildNotes(),
-            placeOrder()
+            placeOrder(),
             
             ],
           )
@@ -110,19 +109,15 @@ class _OrderState extends State<Order> {
 
   Widget buildNotes()
   {
+    _notes = "N/A"; //Will pass this in if nothing is changed.
     return Container(
       width:200,
       child:TextFormField( 
         decoration: InputDecoration(labelText: 'Notes'),
-        validator: (String value) {
-          if (value.isEmpty) {
-            return 'None';
-          }
-          return null;
-          },
         onChanged: (String value) //takes in a value
         {
           _notes = value;
+
         },
         )); 
   }
@@ -150,69 +145,5 @@ class _OrderState extends State<Order> {
       'status': status}
     );
   }
-  
-
-  // void sendOrder() async {
-  //   StreamBuilder<QuerySnapshot>(
-  //     stream: Firestore.instance.collection("orders").snapshots(),
-  //     builder:(context,snapshot) {
-  //       if (!snapshot.hasData){
-  //         Text("Loading");
-  //       }
-  //       else{
-  //         List<DropdownMenuItem> items
-  //       }
-  //     }
-  //   )
-  // }
-  
-
-  // Widget buildEntree() {
-  //   return TextFormField(
-  //     decoration: InputDecoration(labelText: 'Entree'),
-  //     validator: (String value) {
-  //       if (value.isEmpty) {
-  //         return '';
-  //       }
-  //       return null;
-  //     },
-  //     onSaved: (String value) //takes in a value
-  //     {
-  //       _entree = value;
-  //     },
-  //   );
-  // }
-
-  // Widget buildSide() {
-  //   return TextFormField(
-  //     decoration: InputDecoration(labelText: 'Side'),
-  //     validator: (String value) {
-  //       if (value.isEmpty) {
-  //         return '';
-  //       }
-  //       return null;
-  //     },
-  //     onSaved: (String value) //takes in a value
-  //     {
-  //       _side = value;
-  //     },
-  //   );
-  // }
-
-  // Widget buildDrink() {
-  //   return TextFormField(
-  //     decoration: InputDecoration(labelText: 'Drink'),
-  //     validator: (String value) {
-  //       if (value.isEmpty) {
-  //         return '';
-  //       }
-  //       return null;
-  //     },
-  //     onSaved: (String value) //takes in a value
-  //     {
-  //       _drink = value;
-  //     },
-  //   );
-  // }
 }
 

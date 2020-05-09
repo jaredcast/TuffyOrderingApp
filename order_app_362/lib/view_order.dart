@@ -1,33 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:order_app_362/models/order_model.dart';
-import 'order.dart';
-
-
-// class ViewOrder extends StatelessWidget {
-//   const ViewOrder({Key key, this.user}) : super(key: key);
-//   final FirebaseUser user;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     String uID = user.uid; //business uid
-//     return StreamBuilder(
-//       stream: Firestore.instance.collection('orders').snapshots(),
-//       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-//         if (!snapshot.hasData) return new Text("There is no expense");
-//         return new ListView(children: getOrders(snapshot));
-//     });
-//   }
-
-  // getOrders(AsyncSnapshot<QuerySnapshot> snapshot) {
-  //   return snapshot.data.documents.map((doc) => new ListTile(title: new Text(doc["entree"]),
-  //     subtitle: new Text(doc["drink"]),
-  //     isThreeLine: ,
-  //   ));
-  // }
-//}
 
 String _uID = '';
 
@@ -38,8 +10,6 @@ Future getOrders() async {
 }
 
 Future getSingleOrder() async {
-    var firestore = Firestore.instance;
-    QuerySnapshot qs = await firestore.collection("orders").getDocuments();
     return Firestore.instance.collection('users').document(_uID).snapshots();
 }
 
@@ -104,88 +74,81 @@ class _ViewOrderState extends State<ViewOrder> {
 }
 
 
-
-Widget buildOptions()
-{
-  String _status;
-  DropdownButton<String>(
-             value: _status,
-             items: <String>['New', 'In progress', 'Ready for pickup', 'Out for delivery', 'Cancelled'].map((String status) {
-                  return new DropdownMenuItem<String>(
-                    value: status,
-                    child: new Text(status),
-                  );
-                }).toList(),
-              onChanged: (String changedValue) {
-                   _status = changedValue;
-              },
-            );
-}
-
 class ViewSingleOrder extends StatefulWidget {
   @override
   ViewSingleOrderState createState() => ViewSingleOrderState();
 }
 
 class ViewSingleOrderState extends State<ViewSingleOrder> {
+  String _status = 'New';
+
   @override
   Widget build(BuildContext context) {
-    return new Scaffold (
-      appBar: new AppBar(title: Text("Order")),
-      body: new Container(
-        margin: EdgeInsets.all(24),
-        child: StreamBuilder(
+    
+    return StreamBuilder(
           stream: Firestore.instance.collection('orders').document(_uID).snapshots(),
           builder: (context, snapshot){
-
-          if (snapshot.connectionState == ConnectionState.waiting)
-          {
-            return Center(child: Text("Loading..."),);
-          }
+          var userDocument = snapshot.data;
           
-          else {
-            var userDocument = snapshot.data;
-            return new Text("Entree: " + userDocument["entree"]
-            + "\nDrink: " + userDocument["drink"] 
-            + "\nSide: " + userDocument["side"] 
-            + "\nNotes: " + userDocument["notes"] 
-            + "\nEmail: " + userDocument["email"]
-            + "\nStatus: " + userDocument["status"]
-            + "\nUser ID: " + userDocument["uid"],          
-            style:TextStyle(fontSize: 20));  
+          return Scaffold(
+            appBar: AppBar(title: Text('Getting order'),
+            centerTitle: true),
+            body: SingleChildScrollView(child: 
+            Container(alignment: Alignment.center,
+            margin: EdgeInsets.all(24),
+            child: Form(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,        
+                    children: <Widget>[
+                      
+                      Text("Entree: " + userDocument["entree"]
+                      + "\nDrink: " + userDocument["drink"] 
+                      + "\nSide: " + userDocument["side"] 
+                      + "\nNotes: " + userDocument["notes"] 
+                      + "\nEmail: " + userDocument["email"]
+                      + "\nStatus: " + userDocument["status"]
+                      + "\nUser ID: " + userDocument["uid"],          
+                      style:TextStyle(fontSize: 20)),
+                      buildStatus(), //build all widgets as children
+                      
 
-          }       
-          }     
-      ),
-    )
-  );
+                      RaisedButton(child: Text("Submit status of order"),
+                      color: Colors.blue,
+                      onPressed: updateStatus
+                      )
+                    ]
+                )
+              ),
+            )           
+          )
+        ); 
+      }     
+    );   
+  }
+
+  Widget buildStatus()
+  { 
+    return DropdownButton<String>(
+      value: _status,
+      items: <String>['New', 'In progress', 'Ready for pickup', 'Out for delivery',
+      'Delivered', 'Complete', 'Cancelled'].map((String status) {
+          return new DropdownMenuItem<String>(
+            value: status,
+            child: new Text(status),
+          );
+        }).toList(),
+        onChanged: (String changedValue) {
+        setState(() {
+            _status = changedValue;
+        }
+        );
+      },
+    );
+  }
+
+  void updateStatus() {
+    Firestore.instance.collection('orders').document(_uID).updateData({
+      'status': _status
+    });
   }
 }
-
-    // return Scaffold(
-    //   body: StreamBuilder(
-    //   stream: Firestore.instance.collection('orders').snapshots(),
-    //   builder: (context, snapshot){
-    //     if(!snapshot.hasData){
-    //       const Text('Loading');
-    //     }
-    //     else{
-    //       return ListView.builder(
-    //         itemCount: snapshot.data.documents.length,
-    //         itemBuilder:(context, index){
-    //           DocumentSnapshot myorder = snapshot.data.documents[index];
-    //           return Stack(children: <Widget>[
-    //             SizedBox(height:10.0),
-    //             Text( '${myorder['entree']}'),
-    //             SizedBox(height:10.0),
-    //             Text( '${myorder['drink']}'),
-    //             SizedBox(height:10.0),
-    //             Text( '${myorder['side']}'),
-    //             SizedBox(height:10.0),
-    //             Text( '${myorder['entree']}'),
-    //           ],);
-    //         });
-    //     }
-    //   }
-    // ,)
-    // );
