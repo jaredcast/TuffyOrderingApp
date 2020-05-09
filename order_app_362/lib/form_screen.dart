@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:order_app_362/database.dart';
-//import 'package:order_app_362/logins.dart';
 import 'package:order_app_362/sign_up.dart';
 import 'package:order_app_362/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

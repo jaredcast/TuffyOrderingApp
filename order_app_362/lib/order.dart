@@ -134,18 +134,20 @@ class _OrderState extends State<Order> {
     );
   }
 
-  void sendOrder() async
+  void sendOrder() async //Sends a new order.
   {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     String uID = user.uid;
     String email = user.email;
+    String status = "New";
     Firestore.instance.collection("orders").document(uID).setData(
       {'entree': _entree,
       'drink': _drink,
       'side': _side,
       'notes': _notes,
       'uid': uID,
-      'email': email}
+      'email': email,
+      'status': status}
     );
   }
   

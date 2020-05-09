@@ -19,6 +19,10 @@ class Home extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(builder: (context) => Order()));
   }
 
+  void navToViewOrder() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ViewOrder()));
+  }
+
   //  void navToViewOrder() {
   //   Navigator.push(context, MaterialPageRoute(builder: (context) => ViewOrder()));
   // }
@@ -27,6 +31,13 @@ class Home extends StatelessWidget {
     return RaisedButton(child: Text("Place an order"),
     color: Colors.blue,
     onPressed: navToOrder,
+    );
+  }
+
+   Widget viewOrderButton() {
+    return RaisedButton(child: Text("View orders"),
+    color: Colors.blue,
+    onPressed: navToViewOrder,
     );
   }
 
@@ -70,7 +81,7 @@ class Home extends StatelessWidget {
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,        
                     children: <Widget>[
-                      //() //Place an order
+                      viewOrderButton()
                     ]
                 )
             ),
