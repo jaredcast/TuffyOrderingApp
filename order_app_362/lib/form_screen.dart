@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:order_app_362/logins.dart';
+import 'package:order_app_362/database.dart';
 import 'package:order_app_362/sign_up.dart';
+import 'package:order_app_362/home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FormScreen extends StatefulWidget {
   @override
@@ -13,6 +15,9 @@ class FormScreenState extends State<FormScreen> {
   String _email;
   String _password;
 
+  DatabaseService myDatabase = new DatabaseService();
+  QuerySnapshot userInfo;
+  final firestoreInstance = Firestore.instance;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -32,21 +37,18 @@ class FormScreenState extends State<FormScreen> {
     );
   }
   
-  Widget customerButton() {
-    return RaisedButton(child: Text("Login as Customer"),
+  Widget signInButton() {
+    return RaisedButton(child: Text("Sign in"),
     color: Colors.blue,
-    onPressed: signInCustomer,
-    );
-  }
-  Widget businessButton() {
-    return RaisedButton(child: Text("Login as Business"),
-    color: Colors.red,
-    onPressed: signInBusiness,
+    //onPressed: signInCustomer,
+    onPressed: signIn,
     );
   }
 
+
   Widget signUpButton() {
     return RaisedButton(
+      color: Colors.green,
       onPressed: navigateToSignUp,
       child: Text("Sign up"));
   }
@@ -71,29 +73,13 @@ class FormScreenState extends State<FormScreen> {
     );
   }
 
-  Future<void> signInCustomer() async{
-    final formState = formKey.currentState;
-    if (formState.validate()) {
-      formState.save();
-      try {
+  void signIn() async {
+    if(formKey.currentState.validate()){
+      formKey.currentState.save();
+      try{
         FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password)).user;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerHome(user: user))); //go to customer homepage
-      }
-      catch(e) {
-        print(e.message);
-      }
-    }
-  }
-
-   Future<void> signInBusiness() async{
-    final formState = formKey.currentState;
-    if (formState.validate()) {
-      formState.save();
-      try {
-        FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password)).user;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => BusinessHome(user: user))); //go to business homepage
-      }
-      catch(e) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Home(user: user)));
+      }catch(e){
         print(e.message);
       }
     }
@@ -111,37 +97,13 @@ class FormScreenState extends State<FormScreen> {
         fit: BoxFit.fitWidth);
   }
 
-  //builds dropdown bar
-  // String dropdownValue = 'Customer';
-  // Widget buildDropdown(BuildContext context) {
-  //   return DropdownButton<String>(
-  //       value: dropdownValue,
-  //       icon: Icon(Icons.arrow_downward),
-  //       iconSize: 24,
-  //       elevation: 16,
-  //       style: TextStyle(
-  //         color: Colors.black,
-  //       ),
-  //       underline: Container(
-  //         height: 2,
-  //         color: Colors.green,
-  //       ),
-      
-  //       onChanged: (String newValue) {
-  //         setState(() {
-  //           dropdownValue = newValue;
-  //         });
-  //       },
-  //       items: <String>['Customer', 'Business']
-  //         .map<DropdownMenuItem<String>>((String value) {
-  //           return DropdownMenuItem<String>(
-  //             value: value,
-  //             child: Text(value),
-  //           );
-  //       })
-  //       .toList()
-  //   );
-  // }
+    void getStuff(x) async{
+    FirebaseUser firebaseUser = x;
+    firestoreInstance.collection("users").document(firebaseUser.uid).get().then((value){
+      print(value.data);
+    });
+  }
+
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,7 +111,7 @@ class FormScreenState extends State<FormScreen> {
             centerTitle: true
         ),
 
-        body:
+        body:SingleChildScrollView(child:
         Container(
             margin: EdgeInsets.all(24),
             child: Form(
@@ -159,60 +121,18 @@ class FormScreenState extends State<FormScreen> {
                     children: <Widget>[
                       buildImage(),
                       buildEmail(),
-                      buildPassword(),
+                      buildPassword(),  
                       SizedBox(height: 20),
-                      customerButton(),
-                      businessButton(),
-                      // buildDropdown(context),
+                      signInButton(),
                       SizedBox(height: 10),
-                      signUpButton(),
-                      // RaisedButton(
-                      //   child: Text('Submit', style: TextStyle(
-                      //     color: Colors.red,
-                      //     fontSize:16,),
-                      //   ),
-                      //   onPressed: () {
-                      //     if (!formKey.currentState.validate()) {
-                      //       return;
-                      //     }
-
-                      //     formKey.currentState.save(); //state is correct, save. print in console
-                      //     // print(email);
-                      //     // print(password);
-
-                      //   },
-                      // )
+                      signUpButton(),               
                     ]
                 )
             ),
 
+        
         )
+      )
     );
   }
 }
-
-
-
-//Old widget buttons
-// Widget customerButton() {
-  //   return FlatButton(child: Text("Login as Customer"),
-  //   color: Colors.blue,
-  //   onPressed: () {
-  //     if (!formKey.currentState.validate()) {
-  //       return;
-  //     }
-  //     Navigator.pushNamed(context, '/LoginAsCustomer');
-  //   },
-  //   );
-  // }
-  // Widget businessButton() {
-  //   return FlatButton(child: Text("Login as Business"),
-  //   color: Colors.red,
-  //   onPressed: () {
-  //     if (!formKey.currentState.validate()) {
-  //       return;
-  //     }
-  //     Navigator.pushNamed(context, '/LoginAsBusiness');
-  //   },
-  //   );
-  // }

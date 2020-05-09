@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+
+
+import 'order.dart';
 
 //Provide pages for customers and business owners
 
@@ -21,7 +23,30 @@ class _CustomerHomeState extends State<CustomerHome> {
     return Scaffold(
       appBar: AppBar(title: Text('Welcome ${widget.user.email}'),
       centerTitle: true),
+    body: 
+    Container(   alignment: Alignment.center,
+            child: Form(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,        
+                    children: <Widget>[
+                      orderButton()
+                    ]
+                )
+            ),
+        )
     );
+  }
+
+  
+  Widget orderButton() {
+    return RaisedButton(child: Text("Place an order"),
+    color: Colors.blue,
+    onPressed: navToOrder,
+    );
+  }
+
+  void navToOrder() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Order()));
   }
 }
 class BusinessHome extends StatefulWidget {
@@ -44,25 +69,5 @@ class _BusinessHomeState extends State<BusinessHome> {
       centerTitle: true),
     );
   }
+
 }
-
-//class _CustomerHomeState extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("Welcome Customer"),
-//       centerTitle: true),
-//     );
-//   }
-// }
-
-// class LoginAsBusiness extends StatelessWidget {
-//  @override
-//   Widget build(BuildContext context) {
-//      return Scaffold(appBar:
-//      AppBar(title: Text("Welcome Business Owner"),
-//      centerTitle: true),
-//      );
-//    }
-//  }
-
