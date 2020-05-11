@@ -30,8 +30,13 @@ class _SignUpState extends State<SignUp> {
             TextFormField( //Email
               decoration: InputDecoration(labelText: 'Email'),
               validator: (String value) {
+                bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
                 if (value.isEmpty) {
                   return 'Email is Required';
+                }    
+                else if (emailValid == false)
+                {
+                  return 'Not in email format.';
                 }
                 return null;
                },
@@ -49,7 +54,7 @@ class _SignUpState extends State<SignUp> {
                   if (value.isEmpty) {
                     return 'Password is Required';
                   }
-                  else if (value.length < 4) {
+                  else if (value.length <= 4) {
                     return 'Password is too short';
                   }
                   return null;

@@ -25,8 +25,13 @@ class FormScreenState extends State<FormScreen> {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Email'),
       validator: (String value) {
+        bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
         if (value.isEmpty) {
           return 'Email is Required';
+        }    
+        else if (emailValid == false)
+        {
+          return 'Not in email format.';
         }
         return null;
       },
