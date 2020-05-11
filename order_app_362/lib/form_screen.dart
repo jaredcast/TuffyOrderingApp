@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:order_app_362/database.dart';
+import 'package:order_app_362/sign_up.dart';
+import 'package:order_app_362/home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class FormScreen extends StatefulWidget {
   @override
   FormScreenState createState() => FormScreenState();
@@ -6,55 +12,45 @@ class FormScreen extends StatefulWidget {
 
 class FormScreenState extends State<FormScreen> {
 
-  String username;
-  String password;
+  String _email;
+  String _password;
+
+  DatabaseService myDatabase = new DatabaseService();
+  QuerySnapshot userInfo;
+  final firestoreInstance = Firestore.instance;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  Widget buildUsername() {
+  Widget buildEmail() {
     return TextFormField(
-      decoration: InputDecoration(labelText: 'Username'),
+      decoration: InputDecoration(labelText: 'Email'),
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Username is Required';
+          return 'Email is Required';
         }
         return null;
       },
       onSaved: (String value) //takes in a value
       {
-        username = value;
+        _email = value;
       },
     );
   }
-
-  String dropdownValue = 'Customer';
-  Widget buildDropdown(BuildContext context) {
-    return DropdownButton<String>(
-        value: dropdownValue,
-        icon: Icon(Icons.arrow_downward),
-        iconSize: 24,
-        elevation: 16,
-        style: TextStyle(
-          color: Colors.black,
-        ),
-        underline: Container(
-          height: 2,
-          color: Colors.green,
-        ),
-        onChanged: (String newValue) {
-          setState(() {
-            dropdownValue = newValue;
-          });
-        },
-        items: <String>['Customer', 'Business']
-          .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-        })
-        .toList()
+  
+  Widget signInButton() {
+    return RaisedButton(child: Text("Sign in"),
+    color: Colors.blue,
+    //onPressed: signInCustomer,
+    onPressed: signIn,
     );
+  }
+
+
+  Widget signUpButton() {
+    return RaisedButton(
+      color: Colors.green,
+      onPressed: navigateToSignUp,
+      child: Text("Sign up"));
   }
 
   Widget buildPassword() {
@@ -66,12 +62,31 @@ class FormScreenState extends State<FormScreen> {
         if (value.isEmpty) {
           return 'Password is Required';
         }
+        else if (value.length < 4) {
+          return 'Password is too short';
+        }
         return null;
       },
       onSaved: (String value) {
-        password = value;
+        _password = value;
       },
     );
+  }
+
+  void signIn() async {
+    if(formKey.currentState.validate()){
+      formKey.currentState.save();
+      try{
+        FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password)).user;
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Home(user: user)));
+      }catch(e){
+        print(e.message);
+      }
+    }
+  }
+
+  void navigateToSignUp() {
+     Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
   }
 
   Widget buildImage()
@@ -82,48 +97,42 @@ class FormScreenState extends State<FormScreen> {
         fit: BoxFit.fitWidth);
   }
 
+    void getStuff(x) async{
+    FirebaseUser firebaseUser = x;
+    firestoreInstance.collection("users").document(firebaseUser.uid).get().then((value){
+      print(value.data);
+    });
+  }
+
+
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("Tuffy Ordering Login"),
             centerTitle: true
         ),
 
-        body:
-
+        body:SingleChildScrollView(child:
         Container(
             margin: EdgeInsets.all(24),
             child: Form(
                 key: formKey,
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,                   
                     children: <Widget>[
-
                       buildImage(),
-                      buildUsername(),
-                      buildPassword(),
-                      buildDropdown(context),
+                      buildEmail(),
+                      buildPassword(),  
+                      SizedBox(height: 20),
+                      signInButton(),
                       SizedBox(height: 10),
-                      RaisedButton(
-                        child: Text('Submit', style: TextStyle(
-                          color: Colors.red,
-                          fontSize:16,),
-                        ),
-                        onPressed: () {
-                          if (!formKey.currentState.validate()) {
-                            return;
-                          }
-
-                          formKey.currentState.save(); //state is correct, save. print in console
-                          print(username);
-                          print(password);
-
-                        },
-                      )
+                      signUpButton(),               
                     ]
                 )
             ),
 
+        
         )
+      )
     );
   }
 }
