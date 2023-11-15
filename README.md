@@ -10,3 +10,6 @@ Some features were missing due to time, such as special deals, recommendations, 
 Worked alongside Firebase and Firestore.
 
 To run, connect with an Android emulator and run main.dart
+
+# Video Demonstration
+https://youtu.be/lY3OCcOAXD8
